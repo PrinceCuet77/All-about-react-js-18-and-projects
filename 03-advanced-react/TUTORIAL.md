@@ -81,6 +81,7 @@ import Starter from './tutorial/01-useState/starter/02-useState-basics.jsx';
 - returns an array with two elements: the current state value, and a function that we can use to update the state
 - accepts default value as an argument
 - state update triggers re-render
+- the value will be preserved between re-render
 
 ```js
 import { useState } from 'react';
