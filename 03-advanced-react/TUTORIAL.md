@@ -2268,6 +2268,99 @@ const UserContainer = ({ user, logout }) => {
 export default UserContainer;
 ```
 
+#### Setup Context
+
+context is returning two components
+
+- Provider (Needed)
+- Comsumer
+
+refectoring the previous code:
+
+Navbar.jsx
+
+```js
+import { useState, createContext } from 'react'
+import NavLinks from './NavLinks'
+
+export const NavbarContext = createContext()
+
+const Navbar = () => {
+    const [user, setUser] = useState({ name: 'bob' })
+
+    const logout = () => {
+        setUser(null)
+    }
+
+    return (
+        <NavbarContext.Provider value={{ user, logout }}>
+            <nav className='navbar'>
+                <h5>CONTEXT API</h5>
+                <NavLinks />
+            </nav>
+        </NavbarContext.Provider>
+    )
+}
+
+export default Navbar
+```
+
+UserContainer.jsx
+
+```js
+import { useContext } from 'react'
+import { NavbarContext } from './Navbar'
+
+const UserContainer = () => {
+    const { user, logout } = useContext(NavbarContext)
+
+    return (
+        <div className='user-container'>
+            {user ? (
+                <>
+                    <p>Hello There, {user?.name?.toUpperCase()}</p>
+                    {/* if 'user.name' exists then return 'user.name' otherwise undefine */}
+                    <button className='btn' onClick={logout}>
+                        logout
+                    </button>
+                </>
+            ) : (
+                <p>Please Login</p>
+            )}
+        </div>
+    )
+}
+
+export default UserContainer
+```
+
+#### using custom hook
+
+Navbar.jsx
+
+```js
+import { useContext, createContext } from 'react'
+
+export const NavbarContext = createContext()
+
+// custom hook
+export const useAppContext = () => useContext(NavbarContext)
+```
+
+UserContainer.jsx
+
+```js
+import { useAppContext } from './Navbar'
+
+const UserContainer = () => {
+    const { user, logout } = useAppContext()
+
+    // rest of the content is the same...
+}
+
+export default UserContainer
+```
+
 #### Setup Global Context
 
 final code in the repo under w-assets
@@ -2292,6 +2385,42 @@ npm install && npm run dev
 - setup a custom hook
 - access in App.jsx
 - log result
+
+src/context.jsx
+
+```js
+import { createContext, useContext, useState } from 'react';
+
+const GlobalContext = createContext();
+
+export const useGlobalContext = () => useContext(GlobalContext);
+
+const AppContext = ({ children }) => {
+  const [name, setName] = useState('peter');
+
+  return (
+    <GlobalContext.Provider value={{ name, setName }}>
+      {children}
+    </GlobalContext.Provider>
+  );
+};
+
+export default AppContext;
+```
+
+main.jsx
+
+```js
+import AppContext from './context';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <AppContext>
+      <App />
+    </AppContext>
+  </React.StrictMode>
+);
+```
 
 #### useReducer
 

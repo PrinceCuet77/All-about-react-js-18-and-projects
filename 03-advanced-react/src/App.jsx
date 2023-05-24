@@ -1,4 +1,4 @@
-import Practice from './tutorial/02-useEffect/practice/01-code-example'
+import Practice from './tutorial/09-context-api/practice/Navbar'
 
 function App() {
     return (
