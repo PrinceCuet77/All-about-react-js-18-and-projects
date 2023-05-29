@@ -1,4 +1,4 @@
-import Practice from './tutorial/09-context-api/practice/context-api/Navbar'
+import Practice from './tutorial/10-useReducer/practice/01-useReducer'
 
 function App() {
     return (
