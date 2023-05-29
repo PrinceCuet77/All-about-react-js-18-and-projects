@@ -1,4 +1,4 @@
-import Practice from './tutorial/10-useReducer/practice/01-useReducer'
+import Practice from './tutorial/11-performance/practice/01-lower-state'
 
 function App() {
     return (

@@ -2911,6 +2911,7 @@ Step 02
 
 - Convention is to store the string in the constant variable
 - Constant variable is for reducer function's parameter `action` object's property
+- File: `action.js`
 
 ```js
 export const CLEAR_LIST = 'CLEAR_LIST'
@@ -2924,8 +2925,12 @@ Step 03
   - The `state` - before update `defaultState`
   - The `action` - it's an object & its property is `type` - what I'm trying to do
 - Return the `state` value
+- File: `reducer.js`
 
 ```js
+import { data, people } from '../../../data'
+import { CLEAR_LIST, RESET_LIST, REMOVE_ITEM } from './action'
+
 const reducer = (state, action) => {
   if (action.type === CLEAR_LIST) {
     return { ...state, people: [] }
@@ -2962,8 +2967,15 @@ Step 04
 - Convension:
   - If I need to pass extra parameter in the `dispatch()`, then using 'payload' property which is an object and what I am trying to pass is its property
   - Use `action.type` as all capital letter
+- File: `01-useReducer.jsx`
 
 ```js
+import { useState, useReducer } from 'react'
+import { data, people } from '../../../data'
+
+import { CLEAR_LIST, RESET_LIST, REMOVE_ITEM } from './action'
+import reducer from './reducer'
+
 const ReducerBasics = () => {
   const [state, dispatch] = useReducer(reducer, defaultState)
 
