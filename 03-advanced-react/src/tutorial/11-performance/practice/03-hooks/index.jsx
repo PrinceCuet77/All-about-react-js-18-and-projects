@@ -1,9 +1,21 @@
-import { useState } from 'react';
-import { data } from '../../../../data';
-import List from './List';
+import { useCallback, useState, useMemo } from 'react'
+import { data } from '../../../../data'
+import List from './List'
+import slowFunction from './SlowFunction'
 const LowerState = () => {
-  const [people, setPeople] = useState(data);
-  const [count, setCount] = useState(0);
+  const [people, setPeople] = useState(data)
+  const [count, setCount] = useState(0)
+
+  const value = useMemo(() => slowFunction(), [])
+  console.log(value)
+
+  const removePerson = useCallback(
+    (id) => {
+      const newPeople = people.filter((person) => person.id !== id)
+      setPeople(newPeople)
+    },
+    [people]
+  )
 
   return (
     <section>
@@ -14,8 +26,8 @@ const LowerState = () => {
       >
         count {count}
       </button>
-      <List people={people} />
+      <List people={people} removePerson={removePerson} />
     </section>
-  );
-};
-export default LowerState;
+  )
+}
+export default LowerState
