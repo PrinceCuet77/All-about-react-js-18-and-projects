@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { data } from '../../../data'
-import Person from './Person'
 import Modal from './Modal'
+import Person from './Person'
 
 const ReducerBasics = () => {
-  const [people, setPeople] = useState([])
   const [name, setName] = useState('')
+  const [people, setPeople] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [modalContent, setModalContent] = useState('')
 
@@ -15,13 +14,13 @@ const ReducerBasics = () => {
     if (name) {
       const newPeople = { id: new Date().getTime().toString(), name }
       setPeople([...people, newPeople])
-      setName('')
 
       setShowModal(true)
-      setModalContent('Item added')
+      setModalContent(name + ' is added')
+      setName('')
     } else {
       setShowModal(true)
-      setModalContent('Please add item')
+      setModalContent('Please, add item')
     }
   }
 
@@ -29,9 +28,18 @@ const ReducerBasics = () => {
     setShowModal(false)
   }
 
+  const removeItem = (id) => {
+    setPeople(people.filter((person) => person.id !== id))
+    setShowModal(true)
+    const item = people.find((person) => person.id === id)
+    setModalContent(`${item.name} is deleted`)
+  }
+
   return (
     <section>
-      {showModal && <Modal content={modalContent} closeModal={closeModal} />}
+      {showModal && (
+        <Modal modalContent={modalContent} closeModal={closeModal} />
+      )}
       <form className='form' onSubmit={handleSubmit}>
         <div>
           <input
@@ -42,11 +50,10 @@ const ReducerBasics = () => {
         </div>
         <button className='btn'>add</button>
       </form>
-      <div>
-        {people.map((person) => {
-          return <Person key={person.id} {...person} />
-        })}
-      </div>
+
+      {people.map((person) => {
+        return <Person key={person.id} {...person} removeItem={removeItem} />
+      })}
     </section>
   )
 }
