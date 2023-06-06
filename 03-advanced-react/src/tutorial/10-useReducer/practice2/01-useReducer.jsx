@@ -1,44 +1,54 @@
+import { useReducer } from 'react'
 import { useState } from 'react'
 import Modal from './Modal'
-import Person from './Person'
+import { recuder } from './reducer'
+import { ADD_ITEM, REMOVE_ITEM, EMPTY_ITEM, CLOSE_MODAL } from './action'
+
+const defaultState = {
+  people: [],
+  isModalOpen: false,
+  modalContent: '',
+}
 
 const ReducerBasics = () => {
   const [name, setName] = useState('')
-  const [people, setPeople] = useState([])
-  const [showModal, setShowModal] = useState(false)
-  const [modalContent, setModalContent] = useState('')
+  // const [people, setPeople] = useState([])
+  // const [showModal, setShowModal] = useState(false)
+  // const [modalContent, setModalContent] = useState('')
+
+  const [state, dispatch] = useReducer(recuder, defaultState)
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
     if (name) {
       const newPeople = { id: new Date().getTime().toString(), name }
-      setPeople([...people, newPeople])
-
-      setShowModal(true)
-      setModalContent(name + ' is added')
       setName('')
+      dispatch({ type: ADD_ITEM, payload: newPeople })
     } else {
-      setShowModal(true)
-      setModalContent('Please, add item')
+      dispatch({ type: EMPTY_ITEM })
+      // setShowModal(true)
+      // setModalContent('Please, add item')
     }
   }
 
   const closeModal = () => {
-    setShowModal(false)
+    dispatch({ type: CLOSE_MODAL })
   }
 
   const removeItem = (id) => {
-    setPeople(people.filter((person) => person.id !== id))
-    setShowModal(true)
-    const item = people.find((person) => person.id === id)
-    setModalContent(`${item.name} is deleted`)
+    // setPeople(people.filter((person) => person.id !== id))
+    // setShowModal(true)
+    // const item = people.find((person) => person.id === id)
+    // setModalContent(`${item.name} is deleted`)
+
+    dispatch({ type: REMOVE_ITEM, payload: { id } })
   }
 
   return (
     <section>
-      {showModal && (
-        <Modal modalContent={modalContent} closeModal={closeModal} />
+      {state.isModalOpen && (
+        <Modal modalContent={state.modalContent} closeModal={closeModal} />
       )}
       <form className='form' onSubmit={handleSubmit}>
         <div>
@@ -51,8 +61,19 @@ const ReducerBasics = () => {
         <button className='btn'>add</button>
       </form>
 
-      {people.map((person) => {
-        return <Person key={person.id} {...person} removeItem={removeItem} />
+      {state.people.map((person) => {
+        return (
+          <div key={person.id}>
+            <p>{person.name}</p>
+            <button
+              onClick={() =>
+                dispatch({ type: REMOVE_ITEM, payload: person.id })
+              }
+            >
+              remove
+            </button>
+          </div>
+        )
       })}
     </section>
   )
